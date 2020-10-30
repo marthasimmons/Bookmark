@@ -7,7 +7,7 @@ memory = {}
 
 form = '''<!DOCTYPE html>
 <head>
-        <link rel="stylesheet" href="http://localhost:8000/style.css"/>
+        <link rel="stylesheet" href="/style.css"/>
         <title>Bookmark Server</title>
 </head>
 <body>
