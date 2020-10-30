@@ -23,11 +23,11 @@ form = '''<!DOCTYPE html>
         <br>
         <form method="POST">
             <label>Long URI:</label>
-            <input name="longuri">
+            <input name="longuri" required >
             <br>
             <br>
             <label>Short name:</label>
-            <input name="shortname">
+            <input name="shortname" required>
             <br>
             <br>
             <button type="submit">Save</button>
@@ -36,9 +36,11 @@ form = '''<!DOCTYPE html>
         <br>
         <br>
         
-         <label>URIs I know about:
+         <label>URIs I know about:</label>
+            <br>
+            <br>
             <pre>{}</pre>
-        </label>
+         
     
     </div>
 </body>
@@ -160,7 +162,7 @@ class Shortener(http.server.BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html')
             self.end_headers()
 
-            known = "<br>".join("{} : {}".format(key, memory[key])
+            known = "<br><br>".join('''<form method="POST"><label>{} : {} <input type="hidden" name="delete" value="true" > <input type="hidden" name="longuri" value={} > <input  type="hidden" name="shortname" value={} > <button style="font-size: 1rem;" >Delete</button></label></form>'''.format(key, memory[key] ,memory[key] , key)
                               for key in sorted(memory.keys()))
             self.wfile.write(form.format(known).encode())
 
@@ -175,11 +177,16 @@ class Shortener(http.server.BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write("Form fields missing".encode())
             return
-        
-    
 
         longuri = params["longuri"][0]
         shortname = params["shortname"][0]
+
+        if "delete" in params:
+            del memory[shortname]
+            self.send_response(303)
+            self.send_header('Location', '/')
+            self.end_headers()
+            return
 
         if CheckURI(longuri):
             memory[shortname] = longuri
