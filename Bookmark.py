@@ -10,7 +10,7 @@ memory = {}
 form = '''<!DOCTYPE html>
 <head>
         <link rel="stylesheet" href="/style.css"/>
-        <title>Bookmark Server</title>
+        <title>Martha's Bookmarks</title>
 </head>
 <body>
     <div class="back">
@@ -89,7 +89,6 @@ label {
     font-size: 2rem;
 }
 
-
 input {
     background-color: Transparent;
     color: white;
@@ -117,6 +116,17 @@ button:active {
 
 button:focus {
     outline: none;
+}
+
+.truncate {
+    width: 65rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+div {
+    margin-bottom: 1rem;
 }
 
 '''
@@ -162,7 +172,7 @@ class Shortener(http.server.BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html')
             self.end_headers()
 
-            known = "<br><br>".join('''<form method="POST"><label>{} : {} <input type="hidden" name="delete" value="true" > <input type="hidden" name="longuri" value={} > <input  type="hidden" name="shortname" value={} > <button style="font-size: 1rem;" >Delete</button></label></form>'''.format(key, memory[key] ,memory[key] , key)
+            known = "<br><br>".join('''<form method="POST"><label> <div class="truncate">{} : {}</div> <input type="hidden" name="delete" value="true" > <input type="hidden" name="longuri" value={} > <input  type="hidden" name="shortname" value={} > <button style="font-size: 1rem;" >Delete</button></label></form>'''.format(key, memory[key] ,memory[key] , key)
                               for key in sorted(memory.keys()))
             self.wfile.write(form.format(known).encode())
 
